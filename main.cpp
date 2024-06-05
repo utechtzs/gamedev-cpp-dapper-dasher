@@ -25,12 +25,17 @@ int main() {
 	// pixels/sec
 	int jumpVel = -600;
 
-	SetTargetFPS(160);
+	int frame = 0;
+	const float updateTime = 1.0 / 12.0;
+	float runningTime = 0;
+	SetTargetFPS(60);
 
 	while (!WindowShouldClose()) {
 		BeginDrawing();
 		ClearBackground(WHITE);
 		float dT = GetFrameTime();
+		runningTime += dT;
+
 		if (scarfyPos.y >= windowHeight - scarfyRect.height) {
 			// rect on the ground
 			velocity = 0;
@@ -47,7 +52,14 @@ int main() {
 
 		// update position
 		scarfyPos.y += velocity * dT;
-
+		if (runningTime >= updateTime) {
+			runningTime = 0.0;
+			scarfyRect.x = frame * scarfyRect.width;
+			frame++;
+			if (frame > 5) {
+				frame = 0;
+			}
+		}
 		DrawTextureRec(scarfy, scarfyRect, scarfyPos, WHITE);
 
 		EndDrawing();
