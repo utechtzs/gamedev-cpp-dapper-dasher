@@ -16,25 +16,28 @@ int main() {
 	scarfyPos.x = windowWidth / 2 - scarfyRect.width / 2;
 	scarfyPos.y = windowHeight - scarfyRect.height;
 
-	const int gravity = 1;
+	// acceleration due to gravity (pixles/s)/s
+	const int gravity = 2'000;
 
 	int velocity = 0;
 	bool isInAir = false;
-	int jumpVel = -22;
 
-	SetTargetFPS(60);
+	// pixels/sec
+	int jumpVel = -600;
+
+	SetTargetFPS(160);
 
 	while (!WindowShouldClose()) {
 		BeginDrawing();
 		ClearBackground(WHITE);
-
+		float dT = GetFrameTime();
 		if (scarfyPos.y >= windowHeight - scarfyRect.height) {
 			// rect on the ground
 			velocity = 0;
 			isInAir = false;
 		} else {
 			// rectangle in the air
-			velocity += gravity;
+			velocity += gravity * dT;
 			isInAir = true;
 		}
 
@@ -42,13 +45,8 @@ int main() {
 			velocity += jumpVel;
 		}
 
-		// reset
-		if (IsKeyPressed(KEY_R)) {
-			velocity = 0;
-			scarfyPos.y = windowHeight - scarfyRect.height;
-		}
 		// update position
-		scarfyPos.y += velocity;
+		scarfyPos.y += velocity * dT;
 
 		DrawTextureRec(scarfy, scarfyRect, scarfyPos, WHITE);
 
